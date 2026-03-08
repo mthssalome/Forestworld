@@ -1,0 +1,39 @@
+{
+  "system_id": "arrival_tree_atrest_v1",
+  "references": {
+    "contract": "atrest_global_v7",
+    "layer_id": "arrival_hero",
+    "parallax_id": "mid_depth",
+    "fog_ref": "fog_recession_atrest_v2"
+  },
+  "spatial_logic": {
+    "fixed_x": 0.50,
+    "anchor_y_range": [0.42, 0.45],
+    "corridor_clearance_check": true
+  },
+  "materialization_logic": {
+    "state_variable": "growth_progress",
+    "range": [0.0, 1.0],
+    "visual_weights": {
+      "opacity_max": 1.0,
+      "warmth_boost": 0.10,
+      "clarity_offset": 0.15
+    }
+  },
+  "celestial_anchor": {
+    "type": "pulsing_compass_star",
+    "offset_y_normalized": -0.12,
+    "pulse_config": {
+      "period_ms": 3200,
+      "min_opacity": 0.4,
+      "curve": "ease_in_out"
+    }
+  },
+  "invariants": [
+    "Arr_Inv_01: arrival_tree.x == 0.50",
+    "Arr_Inv_02: arrival_tree.parallax_factor == parallax_bands.mid_depth",
+    "Arr_Inv_03: star.x == arrival_tree.x",
+    "Arr_Inv_04: arrival_tree.luminance <= luminance_budget.global_max + 0.05",
+    "Arr_Inv_05: IF growth_progress < 0.1 THEN visibility == 0.0"
+  ]
+}

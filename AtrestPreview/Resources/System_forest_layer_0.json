@@ -1,0 +1,36 @@
+{
+  "system_id": "forest_layer_0_atrest_v1",
+  "references": {
+    "contract": "atrest_global_v7",
+    "layer_id": "trees_layer_0",
+    "parallax_id": "immediate_fg"
+  },
+  "population_logic": {
+    "count": 20,
+    "distribution": "extreme_lateral_frame_weighting",
+    "y_band_normalized": [0.55, 0.90],
+    "corridor_exclusion_x": [0.35, 0.65],
+    "variant_registry": [0, 1, 2, 4, 5, 7]
+  },
+  "material_properties": {
+    "fill_mode": "monochromatic_silhouette",
+    "base_hex": "#121212",
+    "opacity": 1.0,
+    "scale_factor": 1.1,
+    "blur_logic": {
+      "radius_normalized": 0.0,
+      "authority": "normalized_canonical"
+    }
+  },
+  "immersion_logic": {
+    "trunk_clipping": "enforced_bottom_edge",
+    "immersion_floor_ref": "global_scene_contract.immersion_floor_y"
+  },
+  "invariants": [
+    "Tree0_Inv_01: MIN(tree.y) >= 0.55 AND MAX(tree.y) <= 0.90",
+    "Tree0_Inv_02: tree.y_root >= immersion_floor_y",
+    "Tree0_Inv_03: tree.fog_influence == 0.0",
+    "Tree0_Inv_04: tree.scale >= 1.0 AND tree.scale <= 1.2",
+    "Tree0_Inv_05: COUNT(tree.x < 0.2) + COUNT(tree.x > 0.8) >= 12"
+  ]
+}

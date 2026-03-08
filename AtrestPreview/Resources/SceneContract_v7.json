@@ -1,0 +1,64 @@
+{
+  "contract_id": "atrest_global_v7",
+  "spatial_framework": {
+    "coordinate_system": "normalized_u_v",
+    "axis_origin": "top_left",
+    "aspect_ratio_policy": "aspect_fill_center_crop",
+    "global_horizon_y": 0.35,
+    "immersion_floor_y": 0.85,
+    "parallax_vector_policy": {
+      "x_multiplier": 1.0,
+      "y_multiplier": 0.12
+    }
+  },
+  "depth_ordering_bands": {
+    "sky": 0,
+    "stars": 1,
+    "distant_mountains": 2,
+    "fog_recession": 3,
+    "trees_layer_2": 4,
+    "trees_layer_1": 5,
+    "arrival_hero": 5,
+    "trees_layer_0": 6,
+    "ground_plate": 7
+  },
+  "parallax_bands": {
+    "static": 0.0,
+    "zenith": 0.05,
+    "horizon_distant": 0.1,
+    "mid_depth": 0.4,
+    "near_depth": 0.8,
+    "immediate_fg": 1.0,
+    "immediate_fg_plus": 1.2
+  },
+  "luminance_budget": {
+    "global_min": 0.02,
+    "global_max": 0.25,
+    "silhouette_contrast_target": 0.15
+  },
+  "interactivity": {
+    "camera_drift": {
+      "amplitude_x": 0.015,
+      "amplitude_y": 0.008,
+      "frequency_hz": 0.25,
+      "easing": "sine_in_out",
+      "seed_drift": 42
+    },
+    "scroll_response": {
+      "damping": 0.12,
+      "velocity_multiplier": 1.0,
+      "max_offset_limit": 0.4
+    },
+    "rest_state_attenuation": {
+      "progress_hinge": 0.25,
+      "drift_multiplier_at_zero": 0.40,
+      "warmth_multiplier_at_zero": 0.0,
+      "logic": "linear_ramp_to_hinge"
+    }
+  },
+  "canonical_curves": {
+    "growth_materialization": {
+      "control_points": [0.0, 0.0, 0.58, 1.0]
+    }
+  }
+}

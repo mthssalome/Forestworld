@@ -1,0 +1,45 @@
+{
+  "system_id": "sky_gradient_atrest_v2",
+  "references": {
+    "contract": "atrest_global_v7",
+    "layer_id": "sky",
+    "parallax_id": "static"
+  },
+  "rendering_logic": {
+    "type": "LinearGradient",
+    "start_point": [0.5, 0.0],
+    "end_point": [0.5, 0.35],
+    "clamping_behavior": "extend_final_stop_to_edge"
+  },
+  "baseline_values": {
+    "color_temperature": "cool_to_warm_drift",
+    "luminance_distribution": "top_down_increasing"
+  },
+  "gradient_stops": [
+    {
+      "offset": 0.0,
+      "hex": "#1A1225",
+      "label": "Zenith_Dusk_Base",
+      "luminance": 0.06
+    },
+    {
+      "offset": 0.18,
+      "hex": "#22192E",
+      "label": "Atmospheric_Drift",
+      "luminance": 0.10
+    },
+    {
+      "offset": 0.35,
+      "hex": "#2D1F0E",
+      "label": "Horizon_Warm_Luminance_Peak",
+      "luminance": 0.18
+    }
+  ],
+  "invariants": [
+    "Sky_Inv_01: gradient_stops.last.offset == global_horizon_y",
+    "Sky_Inv_02: MAX(luminance) <= luminance_budget.global_max",
+    "Sky_Inv_03: luminance(Horizon) - silhouette_contrast_target >= 0.03",
+    "Sky_Inv_04: IF Y > global_horizon_y THEN pixel == gradient_stops.last.color",
+    "Sky_Inv_05: Hue(zenith).value < Hue(horizon).value"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "system_id": "distant_mountains_atrest_v2",
+  "references": {
+    "contract": "atrest_global_v7",
+    "layer_id": "distant_mountains",
+    "parallax_id": "horizon_distant"
+  },
+  "geometry_logic": {
+    "type": "multi_layered_silhouette",
+    "base_anchor_y": 0.35,
+    "peak_distribution": "asymmetric_trio",
+    "peak_height_range": [0.28, 0.34],
+    "slope_variance": "low_organic"
+  },
+  "material_properties": {
+    "fill_mode": "monochromatic_atmospheric",
+    "primary_hex": "#241F2B",
+    "opacity": 0.40,
+    "blur_logic": {
+      "radius_normalized": 0.005,
+      "authority": "normalized_canonical",
+      "derivation_hint": "absolute_radius_approx_12px_at_2k"
+    }
+  },
+  "depth_shading": {
+    "haze_integration": "linear_bottom_up",
+    "haze_color_ref": "global_scene_contract.palette.horizon_warm"
+  },
+  "invariants": [
+    "Mtn_Inv_01: base_anchor_y == global_horizon_y",
+    "Mtn_Inv_02: peak_height_range.max < global_horizon_y",
+    "Mtn_Inv_03: opacity <= luminance_budget.global_max"
+  ]
+}

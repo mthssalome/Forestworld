@@ -1,0 +1,34 @@
+{
+  "system_id": "fog_recession_atrest_v2",
+  "references": {
+    "contract": "atrest_global_v7",
+    "layer_id": "fog_recession",
+    "parallax_id": "horizon_distant"
+  },
+  "physics_model": {
+    "type": "volumetric_linear_gradient",
+    "active_y_range": [0.30, 0.45],
+    "density_falloff": "exponential_inverse",
+    "density_direction": "max_at_range_min"
+  },
+  "material_properties": {
+    "color_hex": "#2D1F0E",
+    "max_opacity": 0.65,
+    "blend_mode": "screen",
+    "blur_logic": {
+      "radius_normalized": 0.02,
+      "authority": "normalized_canonical"
+    }
+  },
+  "masking_logic": {
+    "target_layers": ["distant_mountains", "trees_layer_2"],
+    "mask_type": "alpha_occlusion_gradient"
+  },
+  "invariants": [
+    "Fog_Inv_01: MAX(fog_opacity) AT Y == global_horizon_y",
+    "Fog_Inv_02: fog_system.color == palette.horizon_warm",
+    "Fog_Inv_03: fog_active_range <= 0.15",
+    "Fog_Inv_04: fog_opacity * sky_luminance(horizon) <= luminance_budget.global_max",
+    "Fog_Inv_05: fog.parallax_factor == parallax_bands.horizon_distant"
+  ]
+}

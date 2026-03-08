@@ -1,0 +1,36 @@
+{
+  "system_id": "forest_layer_1_atrest_v1",
+  "references": {
+    "contract": "atrest_global_v7",
+    "layer_id": "trees_layer_1",
+    "parallax_id": "mid_depth"
+  },
+  "population_logic": {
+    "count": 20,
+    "distribution": "high_density_lateral_scatter",
+    "y_band_normalized": [0.35, 0.65],
+    "corridor_exclusion_x": [0.42, 0.58],
+    "variant_registry": [0, 1, 2, 3, 4, 5, 6, 7]
+  },
+  "material_properties": {
+    "fill_mode": "monochromatic_silhouette",
+    "base_hex": "#1A1A1A",
+    "opacity": 0.65,
+    "scale_factor": 0.7,
+    "blur_logic": {
+      "radius_normalized": 0.001,
+      "authority": "normalized_canonical"
+    }
+  },
+  "atmospheric_integration": {
+    "fog_influence": 0.3,
+    "recession_mask_type": "subtle_base_fade"
+  },
+  "invariants": [
+    "Tree1_Inv_01: MIN(tree.y) >= 0.35 AND MAX(tree.y) <= 0.65",
+    "Tree1_Inv_02: IF tree.x > 0.42 AND tree.x < 0.58 THEN tree.enabled = false",
+    "Tree1_Inv_03: tree.fog_influence <= 0.4",
+    "Tree1_Inv_04: tree.scale >= 0.6 AND tree.scale <= 0.8",
+    "Tree1_Inv_05: seed == contract_id + layer_id"
+  ]
+}

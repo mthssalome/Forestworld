@@ -1,0 +1,29 @@
+{
+  "system_id": "ground_plate_atrest_v2",
+  "references": {
+    "contract": "atrest_global_v7",
+    "layer_id": "ground_plate",
+    "parallax_id": "immediate_fg_plus"
+  },
+  "geometry_logic": {
+    "type": "high_fidelity_texture_plate",
+    "vertical_anchor_y": 0.85,
+    "height_normalized": 0.15,
+    "top_edge_feather_band": [0.85, 0.90]
+  },
+  "material_properties": {
+    "fill_mode": "organic_textured_gradient",
+    "base_hex": "#0D0D0D",
+    "highlight_hex": "#1A1A1A",
+    "texture_ref": "moss_soil_shadow_map",
+    "opacity": 1.0,
+    "blend_mode": "normal"
+  },
+  "invariants": [
+    "Grd_Inv_01: ground_plate.vertical_anchor_y <= immersion_floor_y",
+    "Grd_Inv_02: ground_plate.parallax_id == immediate_fg_plus",
+    "Grd_Inv_03: luminance(ground_plate) <= luminance(forest_layer_0)",
+    "Grd_Inv_04: alpha_gradient(y=0.85: 0.0, y=0.90: 1.0)",
+    "Grd_Inv_05: asset.bundle_key == moss_soil_shadow_map"
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "system_id": "star_field_atrest_v2",
+  "references": {
+    "contract": "atrest_global_v7",
+    "layer_id": "stars",
+    "parallax_id": "zenith"
+  },
+  "distribution_logic": {
+    "density": 0.04,
+    "positioning": "poisson_disk_sampling",
+    "bounds_y": [0.0, 0.35],
+    "sampling_params": {
+      "min_distance_normalized": 0.025,
+      "max_candidates": 30
+    },
+    "exclusion_zones": [
+      {
+        "center_x": 0.50,
+        "radius_x": 0.05,
+        "weight": 0.8
+      }
+    ]
+  },
+  "star_types": [
+    {
+      "id": "background_glimmer",
+      "type_index": 0,
+      "population_weight": 0.85,
+      "scale_range": [0.001, 0.003],
+      "opacity_range": [0.2, 0.5],
+      "flicker": { "frequency": 0.2, "amplitude": 0.1 }
+    },
+    {
+      "id": "compass_star",
+      "type_index": 1,
+      "population_weight": 0.14,
+      "geometry": "four_pointed_serif",
+      "scale_range": [0.008, 0.012],
+      "opacity_range": [0.6, 0.8],
+      "glow_radius": 0.02
+    },
+    {
+      "id": "arrival_star_focal",
+      "type_index": 2,
+      "population_weight": 0.01,
+      "geometry": "four_pointed_serif_bold",
+      "scale_range": [0.025, 0.025],
+      "opacity_range": [1.0, 1.0],
+      "pulse": { "frequency": 0.5, "min_opacity": 0.7 }
+    }
+  ],
+  "invariants": [
+    "Star_Inv_01: star.brightness <= luminance_budget.global_max",
+    "Star_Inv_02: IF star.y > global_horizon_y THEN star.enabled = false",
+    "Star_Inv_03: star.parallax_factor == parallax_bands.zenith",
+    "Star_Inv_04: COUNT(arrival_star_focal) == 1",
+    "Star_Inv_05: star.flicker_frequency <= 0.5"
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "registry_id": "growth_registry_v1",
+  "references": {
+    "contract": "atrest_global_v7"
+  },
+  "normalization_rules": {
+    "point_count": 128,
+    "interpolation_method": "linear_arc_length",
+    "preserve_landmarks": {
+      "indices": [0, 64, 127],
+      "labels": ["trunk_base", "trunk_apex", "primary_branch_nodes"]
+    }
+  },
+  "states": [
+    {
+      "id": "latent",
+      "threshold": 0.0,
+      "properties": {
+        "opacity": 0.0,
+        "scale_mult": 0.6,
+        "label": "Before arrival"
+      }
+    },
+    {
+      "id": "emerging",
+      "threshold": 0.1,
+      "properties": {
+        "opacity": 0.1,
+        "scale_mult": 0.65,
+        "label": "First visible presence"
+      }
+    },
+    {
+      "id": "rooting",
+      "threshold": 0.3,
+      "properties": {
+        "opacity": 0.45,
+        "scale_mult": 0.75,
+        "label": "Structural silhouette resolving"
+      }
+    },
+    {
+      "id": "mid_growth",
+      "threshold": 0.55,
+      "properties": {
+        "opacity": 0.72,
+        "scale_mult": 0.88,
+        "label": "Canopy mass emerging"
+      }
+    },
+    {
+      "id": "hero",
+      "threshold": 1.0,
+      "properties": {
+        "opacity": 1.0,
+        "scale_mult": 1.0,
+        "label": "Full materialization"
+      }
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "system_id": "forest_layer_2_atrest_v1",
+  "references": {
+    "contract": "atrest_global_v7",
+    "layer_id": "trees_layer_2",
+    "parallax_id": "horizon_distant",
+    "mask_ref": "fog_recession_atrest_v2"
+  },
+  "population_logic": {
+    "count": 20,
+    "distribution": "deterministic_lateral_scatter",
+    "y_band_normalized": [0.15, 0.45],
+    "variant_registry": [0, 1, 2, 3, 4, 5, 6, 7]
+  },
+  "material_properties": {
+    "fill_mode": "monochromatic_silhouette",
+    "base_hex": "#1A1A1A",
+    "opacity": 0.40,
+    "scale_factor": 0.4,
+    "blur_logic": {
+      "radius_normalized": 0.003,
+      "authority": "normalized_canonical"
+    }
+  },
+  "atmospheric_integration": {
+    "fog_influence": 0.8,
+    "recession_mask_type": "linear_bottom_up_alpha"
+  },
+  "invariants": [
+    "Tree2_Inv_01: MIN(tree.y) >= 0.15 AND MAX(tree.y) <= 0.45",
+    "Tree2_Inv_02: tree.path IN high_res_tree_paths",
+    "Tree2_Inv_03: tree.opacity(root) == fog_system.opacity(horizon)",
+    "Tree2_Inv_04: tree.scale <= 0.45",
+    "Tree2_Inv_05: ABS(tree[n].x - tree[n-1].x) >= 0.02"
+  ]
+}
