@@ -21,7 +21,6 @@ targets:
           - Resources
     resources:
       - path: AtrestPreview/Resources
-        type: folder
         optional: false
       - path: AtrestPreview/Assets.xcassets
     settings:
