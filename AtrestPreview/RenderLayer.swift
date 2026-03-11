@@ -281,7 +281,11 @@ struct ForestLayerView: View {
 
                 // Blur intentionally not applied here.
                 // Fog and recession are handled by the fog system.
-                let fillColor = Color(cgColor: .fromHex(mat.base_hex))
+                let fillColor = adjustedColor(
+                    baseHex: mat.base_hex,
+                    layerId: spec.references.layer_id
+                )
+
                 ctx.fill(treePath, with: .color(fillColor))
 
                 placed += 1
@@ -292,6 +296,33 @@ struct ForestLayerView: View {
     private func nextDouble(_ rng: inout SeededRandomNumberGenerator) -> Double {
         Double(rng.next()) / Double(UInt64.max)
     }
+
+    private func adjustedColor(baseHex: String, layerId: String) -> Color {
+    let base = CGColor.fromHex(baseHex)
+
+    let lift: CGFloat
+    switch layerId {
+    case "trees_layer_0":
+        lift = 0.0
+    case "trees_layer_1":
+        lift = 0.18
+    case "trees_layer_2":
+        lift = 0.32
+    default:
+        lift = 0.0
+    }
+
+    guard let comps = base.components, comps.count >= 3 else {
+        return Color(cgColor: base)
+    }
+
+    return Color(
+        red: min(comps[0] + lift, 1.0),
+        green: min(comps[1] + lift, 1.0),
+        blue: min(comps[2] + lift, 1.0)
+    )
+}
+
 }
 
 // MARK: - Ground Plate View
