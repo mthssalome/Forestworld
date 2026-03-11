@@ -210,6 +210,7 @@ struct ForestLayerView: View {
             guard let spec = try? JSONDecoder().decode(ForestLayerSpec.self, from: system.rawData) else {
                 return
             }
+
             let pop = spec.population_logic
             let mat = spec.material_properties
 
@@ -220,37 +221,66 @@ struct ForestLayerView: View {
             let yMax = pop.y_band_normalized[1]
             let exclusion = pop.corridor_exclusion_x
 
+            // Layer 0 is the only layer that must root at the immersion floor
+            let isLayer0 = spec.references.layer_id == "trees_layer_0"
+            let floorY = CGFloat(contract.spatial_framework.immersion_floor_y) * size.height
+
+            var drawContext = context
+            if isLayer0 {
+                drawContext.clip(
+                    to: Path(
+                        CGRect(
+                            x: 0,
+                            y: 0,
+                            width: size.width,
+                            height: floorY
+                        )
+                    )
+                )
+            }
+
             var placed = 0
             var attempts = 0
             let maxAttempts = pop.count * 10
 
             while placed < pop.count && attempts < maxAttempts {
                 attempts += 1
+
                 let xNorm = nextDouble(&rng)
                 let yNorm = yMin + nextDouble(&rng) * (yMax - yMin)
 
                 // Corridor exclusion invariant
-                if let excl = exclusion, xNorm > excl[0] && xNorm < excl[1] { continue }
+                if let excl = exclusion, xNorm > excl[0] && xNorm < excl[1] {
+                    continue
+                }
 
                 let speciesIdx = pop.variant_registry[placed % pop.variant_registry.count]
                 let treePath = TreeAssetRegistry.swiftUIPath(for: speciesIdx, in: size)
 
+                // Root anchoring via actual path bounds
+                let bounds = treePath.boundingRect
+                let rootLocal = CGPoint(x: bounds.midX, y: bounds.maxY)
+
                 let treeX = CGFloat(xNorm) * size.width
                 let treeY = CGFloat(yNorm) * size.height
-                let scale  = CGFloat(mat.scale_factor)
-                let blur   = mat.blur_logic.radius_normalized * Double(min(size.width, size.height))
+                let scale = CGFloat(mat.scale_factor)
 
-                var ctx = context
+                // Clamp root to immersion floor for layer 0 only
+                let rootY = isLayer0 ? max(treeY, floorY) : treeY
+
+                var ctx = drawContext
                 ctx.opacity = mat.opacity
-                ctx.translateBy(x: treeX, y: treeY)
+
+                // Correct transform order:
+                // 1) world translate to root
+                // 2) scale
+                // 3) translate local root to origin
+                ctx.translateBy(x: treeX, y: rootY)
                 ctx.scaleBy(x: scale, y: scale)
-                ctx.translateBy(x: -512 * scale, y: -1024 * scale)
+                ctx.translateBy(x: -rootLocal.x, y: -rootLocal.y)
 
-                // blur_logic.authority == normalized_canonical
-                if blur > 0 {
-                    ctx.addFilter(.blur(radius: CGFloat(blur)))
-                }
-
+                // Blur intentionally not applied here.
+                // Fog and recession are handled by the fog system.
                 let fillColor = Color(cgColor: .fromHex(mat.base_hex))
                 ctx.fill(treePath, with: .color(fillColor))
 
@@ -280,33 +310,38 @@ struct GroundPlateView: View {
         let mat = spec.material_properties
 
         // Grd_Inv_01: vertical_anchor_y <= immersion_floor_y
+        // Ensures the ground plate is properly rooted within the atmospheric floor.
         precondition(geo.vertical_anchor_y <= contract.spatial_framework.immersion_floor_y,
-                     "GroundPlateView: Grd_Inv_01 violated")
+                     "GroundPlateView: Grd_Inv_01 violated — anchor_y exceeds immersion_floor_y")
 
         let anchorY = CGFloat(geo.vertical_anchor_y) * viewport.height
         let plateH  = CGFloat(geo.height_normalized) * viewport.height
-        let featherStart = CGFloat(geo.top_edge_feather_band[0]) * viewport.height
-        let featherEnd   = CGFloat(geo.top_edge_feather_band[1]) * viewport.height
-        let featherH = featherEnd - featherStart
+        
+        // Grd_Inv_04: Alpha feathering calculation.
+        // Converts absolute viewport normalized coordinates into relative locations for the mask gradient.
+        let relStart = CGFloat((geo.top_edge_feather_band[0] - geo.vertical_anchor_y) / geo.height_normalized)
+        let relEnd   = CGFloat((geo.top_edge_feather_band[1] - geo.vertical_anchor_y) / geo.height_normalized)
 
         return ZStack(alignment: .top) {
-            // Base plate
-            Color(cgColor: .fromHex(mat.base_hex))
+            // Grd_Inv_05: Organic visual mass (Asset-driven texture backed by base shadow density).
+            // Grd_Inv_03: base_hex ensures ground remains the darkest terrestrial element.
+            Image(mat.texture_ref)
+                .resizable(resizingMode: .tile)
+                .background(Color(cgColor: .fromHex(mat.base_hex)))
                 .frame(width: viewport.width, height: plateH)
-                .offset(y: anchorY)
-
-            // Grd_Inv_04: top-edge alpha mask — transparent at anchor, opaque at +featherH
-            LinearGradient(
-                gradient: Gradient(stops: [
-                    .init(color: .clear, location: 0),
-                    .init(color: Color(cgColor: .fromHex(mat.base_hex)), location: 1)
-                ]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .frame(width: viewport.width, height: featherH)
-            .offset(y: featherStart)
+                // Grd_Inv_04: Alpha feathering (non-procedural) to blend naturally upward.
+                .mask(
+                    LinearGradient(
+                        stops: [
+                            .init(color: .clear, location: Double(relStart)),
+                            .init(color: .black, location: Double(relEnd))
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
         }
         .frame(width: viewport.width, height: viewport.height, alignment: .top)
+        .offset(y: anchorY)
     }
 }
